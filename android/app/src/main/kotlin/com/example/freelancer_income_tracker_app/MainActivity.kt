@@ -1,5 +1,4 @@
-package com.freelancer_income_tracker_app.app
-
+package com.GigVaults.app
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity : FlutterActivity()

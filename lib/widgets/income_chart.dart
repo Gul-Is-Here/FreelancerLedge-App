@@ -1,5 +1,5 @@
-// widgets/income_chart.dart
 import 'package:flutter/material.dart';
+import 'package:freelancer_income_tracker_app/theme/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -17,81 +17,143 @@ class IncomeChart extends StatelessWidget {
     final chartData =
         monthlyEarnings.entries.map((e) => ChartData(e.key, e.value)).toList();
 
-    return Card(
-      margin: EdgeInsets.all(12),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Monthly Income',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+    return AnimatedOpacity(
+      opacity: 1.0,
+      duration: Duration(milliseconds: 600),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: EdgeInsets.all(12),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.lightCard.withOpacity(0.9),
+                AppColors.lightCard,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            SizedBox(height: 16),
-            Container(
-              height: 200,
-              child: SfCartesianChart(
-                primaryXAxis: CategoryAxis(
-                  labelStyle: GoogleFonts.poppins(
-                    fontSize: 10,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Monthly Income',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
-                primaryYAxis: NumericAxis(
-                  labelStyle: GoogleFonts.poppins(
-                    fontSize: 10,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  numberFormat: NumberFormat.simpleCurrency(decimalDigits: 0),
-                ),
-                series: <CartesianSeries>[
-                  ColumnSeries<ChartData, String>(
-                    dataSource: chartData,
-                    xValueMapper: (ChartData data, _) => data.month,
-                    yValueMapper: (ChartData data, _) => data.amount,
-                    color: Theme.of(context).colorScheme.primary,
-                    dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      labelAlignment: ChartDataLabelAlignment.auto,
-                      textStyle: GoogleFonts.poppins(
-                        fontSize: 10,
-                        color: Colors.white,
-                      ),
+              ),
+              SizedBox(height: 12),
+              Container(
+                height:
+                    MediaQuery.of(context).size.height * 0.3, // Dynamic height
+                child: SfCartesianChart(
+                  primaryXAxis: CategoryAxis(
+                    labelStyle: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.7),
                     ),
+                    majorGridLines: MajorGridLines(width: 0),
+                    majorTickLines: MajorTickLines(size: 0),
+                    labelRotation: 45,
                   ),
-                ],
-                tooltipBehavior: TooltipBehavior(
-                  enable: true,
-                  builder: (data, point, series, pointIndex, seriesIndex) {
-                    return Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(4),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                          ),
+                  primaryYAxis: NumericAxis(
+                    labelStyle: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                    numberFormat: NumberFormat.simpleCurrency(decimalDigits: 0),
+                    majorGridLines: MajorGridLines(
+                      width: 1,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.1),
+                    ),
+                    minorGridLines: MinorGridLines(width: 0),
+                  ),
+                  series: <CartesianSeries>[
+                    ColumnSeries<ChartData, String>(
+                      dataSource: chartData,
+                      xValueMapper: (ChartData data, _) => data.month,
+                      yValueMapper: (ChartData data, _) => data.amount,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryColor,
+                          AppColors.secondaryColor,
                         ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
                       ),
-                      child: Text(
-                        '${data.month}\n\$${data.amount.toStringAsFixed(0)}',
-                        style: GoogleFonts.poppins(
-                          color: Theme.of(context).colorScheme.onSurface,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(8),
+                      ),
+                      dataLabelSettings: DataLabelSettings(
+                        isVisible: true,
+                        labelAlignment: ChartDataLabelAlignment.top,
+                        textStyle: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                        labelPosition: ChartDataLabelPosition.outside,
+                        connectorLineSettings: ConnectorLineSettings(
+                          length: '10%',
+                          type: ConnectorType.line,
+                          color: AppColors.accentColor.withOpacity(0.7),
                         ),
                       ),
-                    );
-                  },
+                      animationDuration: 1000,
+                    ),
+                  ],
+                  tooltipBehavior: TooltipBehavior(
+                    enable: true,
+                    // borderRadius: 8,
+                    color: AppColors.lightCard.withOpacity(0.9),
+                    textStyle: GoogleFonts.poppins(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    builder: (data, point, series, pointIndex, seriesIndex) {
+                      return Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.lightCard.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          '${data.month}\n\$${data.amount.toStringAsFixed(0)}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

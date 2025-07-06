@@ -1,4 +1,5 @@
-// app/models/payment_model.dart
+import 'package:intl/intl.dart';
+
 class Payment {
   final String id;
   final String clientName;
@@ -35,6 +36,30 @@ class Payment {
       date: date ?? this.date,
       isPaid: isPaid ?? this.isPaid,
       notes: notes ?? this.notes,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'clientName': clientName,
+      'projectName': projectName,
+      'amount': amount,
+      'date': date.toIso8601String(),
+      'isPaid': isPaid,
+      'notes': notes,
+    };
+  }
+
+  factory Payment.fromJson(Map<String, dynamic> json) {
+    return Payment(
+      id: json['id'] as String,
+      clientName: json['clientName'] as String,
+      projectName: json['projectName'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      date: DateTime.parse(json['date'] as String),
+      isPaid: json['isPaid'] as bool,
+      notes: json['notes'] as String?,
     );
   }
 }
